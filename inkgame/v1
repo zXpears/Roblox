@@ -32,8 +32,8 @@ local Tabs = {
 }
 
 -- Game modules
-local Maid = loadstring(game:HttpGet("https://raw.githubusercontent.com/Quenty/NevermoreEngine/main/src/maid/src/Shared/Maid.lua"))()
-local SenseESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/TexRBLX/Roblox-stuff/main/custom-team-test.lua"))()
+local Maid = loadstring(game:HttpGet("https://raw.githubusercontent.com/iPqauLL/XPloit/refs/heads/main/Maid"))()
+local SenseESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/zXpears/Roblox/refs/heads/main/custom-team-test"))()
 
 --[[ 
     MAIN GAME FEATURES:
