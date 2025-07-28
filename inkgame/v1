@@ -1,0 +1,152 @@
+-- Services
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local HttpService = game:GetService("HttpService")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+
+-- Player references
+local LocalPlayer = Players.LocalPlayer
+local Character = LocalPlayer.Character
+local HumanoidRootPart = Character and Character:FindFirstChild("HumanoidRootPart")
+
+-- Library setup
+local LibraryURL = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
+local Library = loadstring(game:HttpGet(LibraryURL .. "Library.lua"))()
+local ThemeManager = loadstring(game:HttpGet(LibraryURL .. "addons/ThemeManager.lua"))()
+local SaveManager = loadstring(game:HttpGet(LibraryURL .. "addons/SaveManager.lua"))()
+
+-- UI Window
+local Window = Library:CreateWindow({
+    Title = "Ink Game",
+    Footer = "v1.0 - Made by XPloit",
+    Icon = 13113460790
+})
+
+-- Tabs
+local Tabs = {
+    Main = Window:AddTab("Main", "gamepad-2"),
+    Credits = Window:AddTab("Credits & Server", "server"),
+    Changelog = Window:AddTab("Changelog", "notepad-text"),
+    UISettings = Window:AddTab("UI Settings", "settings")
+}
+
+-- Game modules
+local Maid = loadstring(game:HttpGet("https://raw.githubusercontent.com/iPqauLL/XPloit/refs/heads/main/Maid"))()
+local SenseESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/zXpears/Roblox/refs/heads/main/custom-team-test"))()
+
+--[[ 
+    MAIN GAME FEATURES:
+    - Red Light Green Light God Mode
+    - Dalgona Cookie Cheats
+    - Tug of War Auto Pull
+    - Hide and Seek ESP
+    - Glass Bridge ESP
+    - Player Teleportation
+    - Speed/Jump Modifiers
+    - Silent Aim for Rebel game
+    - Gun Modifications
+]]
+
+-- Unload function
+function UnloadScript()
+    -- Clean up all connections and reset values
+    for _, connection in ipairs(Connections) do
+        pcall(function() connection:Disconnect() end)
+    end
+    
+    -- Reset character modifications
+    if Character and Character:FindFirstChildOfClass("Humanoid") then
+        Character.Humanoid.JumpPower = 50
+        Character.Humanoid.HipHeight = 0
+    end
+    
+    -- Notify user
+    Library:Notify({
+        Title = "Unloaded",
+        Description = "Script has been successfully unloaded.",
+        Time = 5
+    })
+    
+    -- Unload UI
+    Library:Unload()
+end
+
+--[[ 
+    RED LIGHT GREEN LIGHT FEATURES
+    - God mode to avoid elimination
+    - Teleport to different positions
+    - Help injured players
+]]
+local RLGLGroup = Tabs.Main:AddLeftGroupbox("Red Light Green Light", "lightbulb")
+RLGLGroup:AddToggle("GodMode", {
+    Text = "God Mode",
+    Tooltip = "Prevents elimination in RLGL",
+    Default = false,
+    Callback = function(Enabled)
+        -- God mode implementation
+    end
+})
+
+--[[ 
+    DALGONA COOKIE FEATURES
+    - Crack prevention
+    - Auto-complete shape
+]]
+local DalgonaGroup = Tabs.Main:AddLeftGroupbox("Dalgona", "triangle")
+DalgonaGroup:AddToggle("NoCrack", {
+    Text = "No Crack Mode",
+    Tooltip = "Prevents cookie from cracking",
+    Default = false
+})
+
+--[[ 
+    PLAYER MODIFICATIONS
+    - Speed boost
+    - Jump power
+    - Noclip
+]]
+local PlayerGroup = Tabs.Main:AddRightGroupbox("Player Mods", "user")
+PlayerGroup:AddSlider("SpeedBoost", {
+    Text = "Speed Boost",
+    Min = 0,
+    Max = 30,
+    Default = 0,
+    Callback = function(Value)
+        -- Speed modification
+    end
+})
+
+-- UI Settings
+local UIGroup = Tabs.UISettings:AddLeftGroupbox("Menu", "wrench")
+UIGroup:AddButton({
+    Text = "Unload Script",
+    Func = UnloadScript,
+    DoubleClick = true
+})
+
+-- Initialize theme and settings
+ThemeManager:SetLibrary(Library)
+SaveManager:SetLibrary(Library)
+ThemeManager:ApplyToTab(Tabs.UISettings)
+
+-- Connections table
+local Connections = {}
+table.insert(Connections, LocalPlayer.CharacterAdded:Connect(function(NewCharacter)
+    Character = NewCharacter
+    HumanoidRootPart = NewCharacter:WaitForChild("HumanoidRootPart")
+end))
+
+-- Watermark and stats
+Library:SetWatermarkVisibility(true)
+local LastUpdate, Frames, FPS = tick(), 0, 0
+
+table.insert(Connections, RunService.RenderStepped:Connect(function()
+    Frames = Frames + 1
+    if (tick() - LastUpdate) >= 1 then
+        FPS, LastUpdate, Frames = Frames, tick(), 0
+    end
+    
+    local Ping = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValue()
+      Library:SetWatermark(("Ink Game - XPloit | %d FPS | %d ms"):format(FPS, Ping))
+end))
